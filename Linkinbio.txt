@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ติดต่อฉัน | Contact Me</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Sarabun & Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Sarabun', sans-serif;
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(31, 41, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+
+        /* Glassmorphism card style */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-fade-down {
+            animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-fade-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .glow-effect {
+            position: relative;
+        }
+        .glow-effect::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            filter: blur(8px);
+        }
+        .glow-effect:hover::after {
+            opacity: 0.65;
+        }
+
+        /* Success Toast style */
+        .toast-active {
+            transform: translate(-50%, 0) scale(1) !important;
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center text-gray-200 py-12 px-4 selection:bg-indigo-500/30">
+
+    <!-- Toast Notification (Custom Notification inside iframe friendly) -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 -translate-y-4 scale-95 opacity-0 pointer-events-none transition-all duration-300 ease-out z-50 flex items-center gap-3 bg-emerald-500/90 text-white px-5 py-3 rounded-2xl shadow-xl shadow-emerald-950/20 backdrop-blur-md">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toast-message" class="text-sm font-medium">คัดลอกเรียบร้อยแล้ว!</span>
+    </div>
+
+    <!-- Line QR Code Modal -->
+    <div id="line-modal" class="fixed inset-0 bg-[#020617]/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 ease-out">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-center border border-white/10 shadow-2xl relative transform scale-95 transition-all duration-300">
+            <!-- Close Button -->
+            <button onclick="toggleLineModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 text-3xl">
+                <i class="fa-brands fa-line"></i>
+            </div>
+            
+            <h3 class="text-lg font-bold text-white mb-1">เพิ่มเพื่อนใน LINE</h3>
+            <p class="text-xs text-gray-400 mb-5">สแกนคิวอาร์โค้ดด้านล่างเพื่อแอดไลน์</p>
+            
+            <!-- QR Code container with custom styling -->
+            <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto shadow-inner flex items-center justify-center border border-emerald-500/20 mb-5">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://line.me/ti/p/Ps4OwloSoe" alt="Line QR Code" class="w-full h-full object-contain">
+            </div>
+
+            <!-- Alternative Action Buttons -->
+            <div class="space-y-2">
+                <a href="https://line.me/ti/p/Ps4OwloSoe" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-external-link text-xs"></i>
+                    ลองเปิดแอปไลน์โดยตรง
+                </a>
+                <button onclick="copyToClipboard('https://line.me/ti/p/Ps4OwloSoe', 'คัดลอกลิงก์ไลน์เรียบร้อย!'); toggleLineModal();" class="w-full py-2 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-medium transition-colors">
+                    คัดลอกลิงก์เพื่อแอดไลน์เอง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-md flex-grow flex flex-col justify-center items-center py-6">
+        
+        <!-- Profile Header Section -->
+        <div class="text-center mb-8 animate-fade-down">
+            <!-- Profile Avatar Glow Container -->
+            <div class="relative w-28 h-28 mx-auto mb-5 group">
+                <div class="absolute inset-0 bg-gradient-to-tr from-blue-500 via-indigo-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-700 group-hover:duration-200" style="animation: pulseGlow 4s infinite ease-in-out;"></div>
+                <div class="relative w-full h-full rounded-full bg-[#0f172a] p-1 flex items-center justify-center overflow-hidden border border-white/10">
+                    <!-- Standard Avatar Icon if no image -->
+                    <span class="text-4xl text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 to-indigo-300 font-bold">PM</span>
+                </div>
+            </div>
+            
+            <h1 class="text-3xl font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-100 to-gray-400">
+                ติดต่อฉัน
+            </h1>
+            <p class="text-gray-400 mt-2 text-sm tracking-wider font-light uppercase">Contact Me</p>
+            <div class="w-12 h-1 bg-gradient-to-r from-indigo-500 to-pink-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <!-- Links List -->
+        <div class="w-full space-y-4">
+            
+            <!-- 1. FACEBOOK BUTTON -->
+            <a href="https://www.facebook.com/share/1BNe4vbzox/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" 
+               class="animate-fade-up block w-full group relative glow-effect" style="animation-delay: 150ms;">
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between transition-all duration-300 hover:translate-y-[-2px] hover:bg-slate-900/60 hover:border-blue-500/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500 text-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-gray-500 font-medium">FACEBOOK</p>
+                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors">Phiraphat Matprasong</p>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-blue-400 group-hover:bg-blue-500/10 transition-all duration-300">
+                        <i class="fa-solid fa-chevron-right text-xs transition-transform duration-300 group-hover:translate-x-0.5"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 2. INSTAGRAM BUTTON -->
+            <a href="https://www.instagram.com/bexm_ix?igsh=MXFibnhra3BjbjFvZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" 
+               class="animate-fade-up block w-full group relative glow-effect" style="animation-delay: 250ms;">
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between transition-all duration-300 hover:translate-y-[-2px] hover:bg-slate-900/60 hover:border-pink-500/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-pink-600/10 border border-pink-500/20 flex items-center justify-center text-pink-500 text-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-gradient-to-tr group-hover:from-yellow-500 group-hover:via-pink-500 group-hover:to-purple-600 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(236,72,153,0.4)]">
+                            <i class="fa-brands fa-instagram"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-gray-500 font-medium">INSTAGRAM</p>
+                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors">@bexm_ix</p>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-pink-400 group-hover:bg-pink-500/10 transition-all duration-300">
+                        <i class="fa-solid fa-chevron-right text-xs transition-transform duration-300 group-hover:translate-x-0.5"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 3. LINE BUTTON (IMPROVED STABILITY) -->
+            <div class="animate-fade-up w-full group relative glow-effect cursor-pointer" style="animation-delay: 350ms;" onclick="toggleLineModal()">
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between transition-all duration-300 hover:translate-y-[-2px] hover:bg-slate-900/60 hover:border-emerald-500/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 text-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                            <i class="fa-brands fa-line"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-gray-500 font-medium">LINE</p>
+                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors">แอดไลน์ผ่านลิงก์ / QR Code</p>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-emerald-400 group-hover:bg-emerald-500/10 transition-all duration-300">
+                        <i class="fa-solid fa-qrcode text-xs transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. GMAIL BUTTON (WITH COPY INTERACTION) -->
+            <div class="animate-fade-up w-full group relative glow-effect" style="animation-delay: 450ms;">
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between transition-all duration-300 hover:translate-y-[-2px] hover:bg-slate-900/60 hover:border-rose-500/50">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <div class="w-12 h-12 rounded-xl bg-rose-600/10 border border-rose-500/20 flex items-center justify-center text-rose-500 text-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] shrink-0">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="text-left min-w-0">
+                            <p class="text-xs text-gray-500 font-medium">GMAIL</p>
+                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors truncate pr-2">peerapatmatprasong@gmail.com</p>
+                        </div>
+                    </div>
+                    <!-- Direct Action Buttons -->
+                    <div class="flex gap-2">
+                        <button onclick="copyToClipboard('peerapatmatprasong@gmail.com', 'คัดลอกอีเมลแล้ว!')" title="คัดลอกอีเมล" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-200">
+                            <i class="fa-regular fa-copy text-xs"></i>
+                        </button>
+                        <a href="mailto:peerapatmatprasong@gmail.com" title="ส่งอีเมลทันที" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-200">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. PHONE BUTTON (WITH CALL & COPY INTERACTION) -->
+            <div class="animate-fade-up w-full group relative glow-effect" style="animation-delay: 550ms;">
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between transition-all duration-300 hover:translate-y-[-2px] hover:bg-slate-900/60 hover:border-amber-500/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-500 text-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] shrink-0">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-gray-500 font-medium">MOBILE PHONE</p>
+                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors">098-345-2076</p>
+                        </div>
+                    </div>
+                    <!-- Direct Action Buttons -->
+                    <div class="flex gap-2">
+                        <button onclick="copyToClipboard('0983452076', 'คัดลอกเบอร์โทรแล้ว!')" title="คัดลอกเบอร์โทรศัพท์" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-200">
+                            <i class="fa-regular fa-copy text-xs"></i>
+                        </button>
+                        <a href="tel:098-345-2076" title="โทรเลย" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-200">
+                            <i class="fa-solid fa-phone-flip text-xs animate-pulse"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="w-full text-center text-xs text-gray-600 tracking-wider mt-12 mb-2">
+        <p class="mb-1">&copy; 2026 PEERAPAT. All Rights Reserved.</p>
+        <p class="text-gray-700">Designed with elegance & precision</p>
+    </footer>
+
+    <!-- Clipboard and UX Script -->
+    <script>
+        function toggleLineModal() {
+            const modal = document.getElementById('line-modal');
+            const innerBox = modal.querySelector('.glass-card');
+            
+            if (modal.classList.contains('opacity-0')) {
+                // Open modal
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    innerBox.classList.remove('scale-95');
+                    innerBox.classList.add('scale-100');
+                }, 50);
+            } else {
+                // Close modal
+                innerBox.classList.remove('scale-100');
+                innerBox.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                }, 150);
+            }
+        }
+
+        function copyToClipboard(text, message) {
+            // Create a temporary input element for execution
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                // Execute standard copy command (works reliably in sandboxed environments/iframes)
+                const success = document.execCommand('copy');
+                if (success) {
+                    showToast(message);
+                } else {
+                    fallbackClipboard(text, message);
+                }
+            } catch (err) {
+                fallbackClipboard(text, message);
+            }
+            
+            document.body.removeChild(tempInput);
+        }
+
+        function fallbackClipboard(text, message) {
+            // Modern Clipboard API fallback
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showToast(message))
+                    .catch(() => alert('ไม่สามารถคัดลอกได้โดยอัตโนมัติ กรุณาคัดลอกด้วยตนเอง'));
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.innerText = message;
+            toast.classList.add('toast-active');
+            
+            // Auto hide toast after 2.5 seconds
+            setTimeout(() => {
+                toast.classList.remove('toast-active');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
