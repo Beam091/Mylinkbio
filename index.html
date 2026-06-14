@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -125,39 +124,6 @@
         <span id="toast-message" class="text-sm font-medium">คัดลอกเรียบร้อยแล้ว!</span>
     </div>
 
-    <!-- Line QR Code Modal -->
-    <div id="line-modal" class="fixed inset-0 bg-[#020617]/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 ease-out">
-        <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-center border border-white/10 shadow-2xl relative transform scale-95 transition-all duration-300">
-            <!-- Close Button -->
-            <button onclick="toggleLineModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-            
-            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 text-3xl">
-                <i class="fa-brands fa-line"></i>
-            </div>
-            
-            <h3 class="text-lg font-bold text-white mb-1">เพิ่มเพื่อนใน LINE</h3>
-            <p class="text-xs text-gray-400 mb-5">สแกนคิวอาร์โค้ดด้านล่างเพื่อแอดไลน์</p>
-            
-            <!-- QR Code container with custom styling -->
-            <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto shadow-inner flex items-center justify-center border border-emerald-500/20 mb-5">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://line.me/ti/p/Ps4OwloSoe" alt="Line QR Code" class="w-full h-full object-contain">
-            </div>
-
-            <!-- Alternative Action Buttons -->
-            <div class="space-y-2">
-                <a href="https://line.me/ti/p/Ps4OwloSoe" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-external-link text-xs"></i>
-                    ลองเปิดแอปไลน์โดยตรง
-                </a>
-                <button onclick="copyToClipboard('https://line.me/ti/p/Ps4OwloSoe', 'คัดลอกลิงก์ไลน์เรียบร้อย!'); toggleLineModal();" class="w-full py-2 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-medium transition-colors">
-                    คัดลอกลิงก์เพื่อแอดไลน์เอง
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Container -->
     <main class="w-full max-w-md flex-grow flex flex-col justify-center items-center py-6">
         
@@ -220,8 +186,9 @@
                 </div>
             </a>
 
-            <!-- 3. LINE BUTTON (IMPROVED STABILITY) -->
-            <div class="animate-fade-up w-full group relative glow-effect cursor-pointer" style="animation-delay: 350ms;" onclick="toggleLineModal()">
+            <!-- 3. LINE BUTTON (DIRECT ACCESS) -->
+            <a href="https://line.me/ti/p/Ps4OwloSoe" target="_blank" rel="noopener noreferrer" 
+               class="animate-fade-up block w-full group relative glow-effect" style="animation-delay: 350ms;">
                 <div class="glass-card rounded-2xl p-4 flex items-center justify-between transition-all duration-300 hover:translate-y-[-2px] hover:bg-slate-900/60 hover:border-emerald-500/50">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 text-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]">
@@ -229,14 +196,14 @@
                         </div>
                         <div class="text-left">
                             <p class="text-xs text-gray-500 font-medium">LINE</p>
-                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors">แอดไลน์ผ่านลิงก์ / QR Code</p>
+                            <p class="text-base font-semibold text-gray-200 group-hover:text-white transition-colors">เพิ่มเพื่อน</p>
                         </div>
                     </div>
                     <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-emerald-400 group-hover:bg-emerald-500/10 transition-all duration-300">
-                        <i class="fa-solid fa-qrcode text-xs transition-transform duration-300 group-hover:scale-110"></i>
+                        <i class="fa-solid fa-chevron-right text-xs transition-transform duration-300 group-hover:translate-x-0.5"></i>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- 4. GMAIL BUTTON (WITH COPY INTERACTION) -->
             <div class="animate-fade-up w-full group relative glow-effect" style="animation-delay: 450ms;">
@@ -292,33 +259,12 @@
 
     <!-- Footer Area -->
     <footer class="w-full text-center text-xs text-gray-600 tracking-wider mt-12 mb-2">
-        <p class="mb-1">&copy; 2026 PEERAPAT. All Rights Reserved.</p>
+        <p class="mb-1">&copy; 2026 PHIRAPHAT. All Rights Reserved.</p>
         <p class="text-gray-700">Designed with elegance & precision</p>
     </footer>
 
     <!-- Clipboard and UX Script -->
     <script>
-        function toggleLineModal() {
-            const modal = document.getElementById('line-modal');
-            const innerBox = modal.querySelector('.glass-card');
-            
-            if (modal.classList.contains('opacity-0')) {
-                // Open modal
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                setTimeout(() => {
-                    innerBox.classList.remove('scale-95');
-                    innerBox.classList.add('scale-100');
-                }, 50);
-            } else {
-                // Close modal
-                innerBox.classList.remove('scale-100');
-                innerBox.classList.add('scale-95');
-                setTimeout(() => {
-                    modal.classList.add('opacity-0', 'pointer-events-none');
-                }, 150);
-            }
-        }
-
         function copyToClipboard(text, message) {
             // Create a temporary input element for execution
             const tempInput = document.createElement('input');
